@@ -85,6 +85,7 @@ def update_cupcake_data(cupcake_id):
     """
     cupcake = Cupcake.query.get_or_404(cupcake_id)
 
+# get ==> default param use conditional data
     flavor = request.json["flavor"]
     size = request.json["size"]
     rating = request.json["rating"]
@@ -99,6 +100,7 @@ def update_cupcake_data(cupcake_id):
     if rating != None:
         cupcake.rating = rating
 
+#make sure that we have handling for default image IF they send along empty string, this works for if they don't want to change image/don't send
     if request.json["image_url"] != "":
         cupcake.image_url = image_url
 
