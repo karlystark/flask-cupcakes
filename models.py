@@ -48,3 +48,14 @@ class Cupcake(db.Model):
         nullable=False,
         default=DEFAULT_IMAGE_URL
     )
+
+    def serialize(self):
+        """Make cupcake object into dictionary"""
+
+        return {
+            "id": self.id,
+            "flavor": self.flavor,
+            "size": self.size,
+            "rating": self.rating,
+            "image_url": self.image_url
+        }
