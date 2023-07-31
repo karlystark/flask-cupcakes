@@ -5,7 +5,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from models import connect_db, db, Cupcake
+from models import connect_db, db, Cupcake, DEFAULT_IMAGE_URL
 
 app = Flask(__name__)
 
@@ -96,14 +96,32 @@ def update_cupcake_data(cupcake_id):
     if size != "":
         cupcake.size = size
 
-    if rating != "":
-        cupcake.rating
+    if rating != None:
+        cupcake.rating = rating
 
-    if request.json["image_url"] == "":
+    if request.json["image_url"] != "":
         cupcake.image_url = image_url
 
     db.session.commit()
 
     cupcake_serialized = cupcake.serialize()
-    
+
     return jsonify(cupcake=cupcake_serialized)
+
+
+@app.delete("/api/cupcakes/<int:cupcake_id>")
+def delete_cupcake(cupcake_id):
+    """Delete cupcake from database.
+    Return JSON: {deleted: [cupcake-id]}"""
+
+    cupcake = Cupcake.query.get_or_404(cupcake_id)
+
+    db.session.delete(cupcake)
+    db.session.commit()
+
+    return jsonify(deleted=[cupcake_id])
+
+
+
+
+

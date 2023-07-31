@@ -19,5 +19,12 @@ c2 = Cupcake(
           "chocolatecupcakesccfrosting1_bakedbyrachel.jpg"
 )
 
-db.session.add_all([c1, c2])
+c3 = Cupcake(
+    flavor="mint",
+    size="extra large",
+    rating=4,
+    image_url=""
+)
+
+db.session.add_all([c1, c2, c3])
 db.session.commit()
