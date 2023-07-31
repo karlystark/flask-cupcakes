@@ -5,7 +5,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from models import connect_db, db, Cupcake, DEFAULT_IMAGE_URL
+from models import connect_db, db, Cupcake
 
 app = Flask(__name__)
 
