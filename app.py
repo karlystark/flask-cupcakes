@@ -29,19 +29,51 @@ def get_cupcakes_data():
     Return JSON: {cupcakes: [{id, flavor, size, rating, image_url}, ...]}"""
 
     cupcakes = Cupcake.query.all()
+
     cupcakes_serialized = [cupcake.serialize() for cupcake in cupcakes]
 
     return jsonify(cupcakes=cupcakes_serialized)
 
 
 @app.get("/api/cupcakes/<int:cupcake_id>")
-def get cupcake_data(cupcake_id):
+def get_cupcake_data(cupcake_id):
     """Get and send data about cupcake.
     Return JSON: {cupcake: {id, flavor, size, rating, image_url}}"""
 
     cupcake = Cupcake.query.get_or_404(cupcake_id)
+
     cupcake_serialized = cupcake.serialize()
 
     return jsonify(cupcake=cupcake_serialized)
+
+
+@app.post("/api/cupcakes")
+def create_cupcake():
+    """Receives JSON cupcake data and adds Cupcake instance to database.
+    Accepts JSON: {cupcake: {flavor, size, rating, image_url}}
+    Return JSON: {cupcake: {id, flavor, size, rating, image_url}} """
+
+    flavor = request.json["flavor"]
+    size = request.json["size"]
+    rating = request.json["rating"]
+
+    if request.json["image_url"] == "":
+        image_url = None
+    else:
+        image_url = request.json["image_url"]
+
+    new_cupcake = Cupcake(
+        flavor=flavor,
+        size=size,
+        rating=rating,
+        image_url=image_url
+    )
+
+    db.session.add(new_cupcake)
+    db.session.commit()
+
+    cupcake_serialized = new_cupcake.serialize()
+
+    return (jsonify(cupcake=cupcake_serialized), 201)
 
 
