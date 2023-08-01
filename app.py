@@ -2,10 +2,10 @@
 
 import os
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 from flask_debugtoolbar import DebugToolbarExtension
 
-from models import connect_db, db, Cupcake
+from models import connect_db, db, Cupcake, DEFAULT_IMAGE_URL
 
 app = Flask(__name__)
 
@@ -86,23 +86,19 @@ def update_cupcake_data(cupcake_id):
     cupcake = Cupcake.query.get_or_404(cupcake_id)
 
 # get ==> default param use conditional data
-    flavor = request.json["flavor"]
-    size = request.json["size"]
-    rating = request.json["rating"]
-    image_url = request.json["image_url"]
+    flavor = request.json.get("flavor", cupcake.flavor)
+    size = request.json.get("size", cupcake.size)
+    rating = request.json.get("rating", cupcake.rating)
 
-    if flavor != "":
-        cupcake.flavor = flavor
+    if request.json.get("image_url") == "":
+        image_url = DEFAULT_IMAGE_URL
+    else:
+        image_url = request.json.get("image_url", cupcake.image_url)
 
-    if size != "":
-        cupcake.size = size
-
-    if rating != None:
-        cupcake.rating = rating
-
-#make sure that we have handling for default image IF they send along empty string, this works for if they don't want to change image/don't send
-    if request.json["image_url"] != "":
-        cupcake.image_url = image_url
+    cupcake.flavor = flavor
+    cupcake.size = size
+    cupcake.rating = rating
+    cupcake.image_url = image_url
 
     db.session.commit()
 
@@ -123,6 +119,14 @@ def delete_cupcake(cupcake_id):
 
     return jsonify(deleted=[cupcake_id])
 
+#####################################################
+#FRONT END
+
+@app.get("/")
+def show_homepage():
+    "Displays the homepage"
+
+    return render_template("homepage.html")
 
 
 

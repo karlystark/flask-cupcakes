@@ -5,7 +5,7 @@ os.environ["DATABASE_URL"] = 'postgresql:///cupcakes_test'
 from unittest import TestCase
 
 from app import app
-from models import db, Cupcake
+from models import db, Cupcake, DEFAULT_IMAGE_URL
 
 # Make Flask errors be real errors, rather than HTML pages with error info
 app.config['TESTING'] = True
@@ -129,8 +129,6 @@ class CupcakeViewsTestCase(TestCase):
             cupcake_id = post_resp.json['cupcake']['id']
 
             data_for_patch = {
-                "flavor": "",
-                "size": "",
                 "rating": 300,
                 "image_url": ""
             }
@@ -145,7 +143,7 @@ class CupcakeViewsTestCase(TestCase):
                     "flavor": "TestFlavor",
                     "size": "TestSize",
                     "rating": 300,
-                    "image_url": "http://test.com/cupcake.jpg"
+                    "image_url": DEFAULT_IMAGE_URL
                 }
             })
 
